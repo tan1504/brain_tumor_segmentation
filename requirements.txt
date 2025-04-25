@@ -1,0 +1,4 @@
+streamlit
+tensorflow
+nibabel
+opencv-python
