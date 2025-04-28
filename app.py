@@ -8,7 +8,7 @@ import tempfile
 import os
 from model_utils import load_model, predict_slice, IMG_SIZE, SEGMENT_CLASSES
 
-st.title("🧠 Ứng dụng Phân đoạn Khối u Não từ ảnh MRI")
+st.title("🧠 Brain tumor segmentation")
 
 model = load_model()
 
@@ -60,7 +60,7 @@ if uploaded_flair_file is not None:
         enhancing_pred = prediction[:, :, 3]
 
         # Hàm tạo ảnh overlay (kết hợp ảnh nền và mask dự đoán với màu và độ trong suốt)
-        def create_overlay(background, mask, color=(255, 165, 0), alpha=0.4): # Thay đổi màu thành cam và tăng độ trong suốt
+        def create_overlay(background, mask, color=(255, 0, 0), alpha=0.5): # Thay đổi màu thành Red và tăng độ trong suốt
             img = np.stack([background] * 3, axis=-1).astype(np.uint8) # Chuyển ảnh nền thành ảnh RGB
             overlay = np.zeros_like(img, dtype=np.uint8) # Tạo mask overlay có cùng kích thước
             overlay[mask > 0] = color # Gán màu cho các pixel thuộc vùng mask
@@ -72,26 +72,26 @@ if uploaded_flair_file is not None:
 
         # Tạo mask màu cho tất cả các lớp dự đoán
         all_classes_mask = np.zeros((IMG_SIZE, IMG_SIZE, 3), dtype=np.uint8)
-        colors = [(255, 165, 0), (0, 255, 255), (255, 0, 255)] # Cam, Cyan, Magenta
+        colors = [(255, 0, 0), (0, 0, 255), (255, 255, 0)] # Red, Blue, Yellow
         for i, color in enumerate(colors):
             all_classes_mask[predicted_mask == i + 1] = color
-        all_classes_pil = Image.blend(flair_pil, Image.fromarray(all_classes_mask), 0.4) # Tăng độ trong suốt
+        all_classes_pil = Image.blend(flair_pil, Image.fromarray(all_classes_mask), 0.5) # Tăng độ trong suốt
 
         # Tạo overlay cho từng lớp khối u riêng lẻ
-        core_overlay_pil = create_overlay((normalized_flair_slice * 255).astype(np.uint8), predicted_mask == 1, color=(255, 165, 0)) # Cam
-        edema_overlay_pil = create_overlay((normalized_flair_slice * 255).astype(np.uint8), predicted_mask == 2, color=(0, 255, 255)) # Cyan
-        enhancing_overlay_pil = create_overlay((normalized_flair_slice * 255).astype(np.uint8), predicted_mask == 3, color=(255, 0, 255)) # Magenta
+        core_overlay_pil = create_overlay((normalized_flair_slice * 255).astype(np.uint8), predicted_mask == 1, color=(255, 0, 0)) # Red
+        edema_overlay_pil = create_overlay((normalized_flair_slice * 255).astype(np.uint8), predicted_mask == 2, color=(0, 0, 255)) # Blue
+        enhancing_overlay_pil = create_overlay((normalized_flair_slice * 255).astype(np.uint8), predicted_mask == 3, color=(255, 255, 0)) # Yellow
 
         # Hiển thị các hình ảnh kết quả trên giao diện Streamlit
-        st.subheader("Kết quả Dự đoán")
+        st.subheader("Predicted results")
         col1, col2, col3 = st.columns(3)
-        col1.image(flair_pil, caption="Ảnh FLAIR", use_container_width=True)
-        col2.image(all_classes_pil, caption="Tất cả các lớp dự đoán", use_container_width=True)
-        col3.image(core_overlay_pil, caption=f"{SEGMENT_CLASSES[1]} dự đoán", use_container_width=True)
+        col1.image(flair_pil, caption="Original image flair", use_container_width=True)
+        col2.image(all_classes_pil, caption="All classes", use_container_width=True)
+        col3.image(core_overlay_pil, caption=f"{SEGMENT_CLASSES[1]} Predicted", use_container_width=True)
         col1, col2, col3 = st.columns(3)
         col1.empty()
-        col2.image(edema_overlay_pil, caption=f"{SEGMENT_CLASSES[2]} dự đoán", use_container_width=True)
-        col3.image(enhancing_overlay_pil, caption=f"{SEGMENT_CLASSES[3]} dự đoán", use_container_width=True)
+        col2.image(edema_overlay_pil, caption=f"{SEGMENT_CLASSES[2]} Predicted", use_container_width=True)
+        col3.image(enhancing_overlay_pil, caption=f"{SEGMENT_CLASSES[3]} Predicted", use_container_width=True)
 
     except Exception as e:
         # Hiển thị thông báo lỗi nếu có bất kỳ vấn đề nào xảy ra trong quá trình xử lý
