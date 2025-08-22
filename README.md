@@ -32,7 +32,7 @@ Sử dụng **U-Net** – một CNN encoder-decoder với skip-connections, phù
 
 ## ⚙️ Cài đặt  
 ```bash
-git clone https://github.com/<username>/brain_tumor_segmentation.git
+git clone https://github.com/tan1504/brain_tumor_segmentation.git
 cd brain_tumor_segmentation
 pip install -r requirements.txt
 ```
@@ -52,7 +52,7 @@ Ví dụ kết quả:
 
 | MRI Gốc | Mask Ground Truth | Dự đoán (U-Net) |
 |---------|------------------|------------------|
-| ![](results/mri.png) | ![](results/mask.png) | ![](results/pred.png) |
+| ![](results/mri.png) | ![](results/groundTruth.png) | ![](results/allClasses.png) |
 
 ## 🔮 Hướng phát triển  
 - Thử nghiệm **Attention U-Net, ResUNet, 3D U-Net**.  
