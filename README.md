@@ -52,7 +52,7 @@ Ví dụ kết quả:
 
 | MRI Gốc | Mask Ground Truth | Dự đoán (U-Net) |
 |---------|------------------|------------------|
-| ![](results/mri.png) | ![](results/groundTruth.png) | ![](results/allClasses.png) |
+| ![](results\MRI.png) | ![](results/groundTruth.png) | ![](results/allClasses.png) |
 
 ## 🔮 Hướng phát triển  
 - Thử nghiệm **Attention U-Net, ResUNet, 3D U-Net**.  
